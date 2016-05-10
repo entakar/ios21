@@ -6,13 +6,15 @@
 import UIKit
 
 class ViewController: UIViewController {
-    @IBOutlet weak var subView: UIView!
+    @IBOutlet weak var timeLabel: UILabel!
+    
     var timer:NSTimer = NSTimer()
     var count:Int = 0
     var time : Int = 0
     var labelcount:Int = 1
     var xcount: CGFloat = 0.0
 
+    var labels = UILabel()
     var Label1:UILabel = UILabel()
     var Label2:UILabel = UILabel()
     var Label3:UILabel = UILabel()
@@ -22,7 +24,7 @@ class ViewController: UIViewController {
     var Label7:UILabel = UILabel()
     var Label8:UILabel = UILabel()
     var Label9:UILabel = UILabel()
-    var xx : CGFloat = 25.5
+    var xx : CGFloat = 30
     var y:CGFloat = 240.0
     
     @IBOutlet weak var subLabel: UILabel!
@@ -42,18 +44,17 @@ class ViewController: UIViewController {
                 selector: Selector("timerCount"),
                 userInfo: nil,
                 repeats: true)
-            subView.backgroundColor = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.8, alpha: 1)
             break
         case "Clear":
             initFunc()
-            clearLabel()
-            subView.backgroundColor = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.8, alpha: 1)
+//            clearLabel()
+            removeAllSubviews(view)
             break
         case "STOP":
             timer.invalidate()
             initFunc()
-            clearLabel()
-            subView.backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 1.0, alpha: 1)
+//            clearLabel()
+            removeAllSubviews(view)
             break
         default:
             break
@@ -61,70 +62,45 @@ class ViewController: UIViewController {
     }
     
     func initFunc(){
-        subLabel.text = "00:00"
+        timeLabel.text = "00:00"
         count = 0
         time = 0
         xcount = 0
     }
     
-    func clearLabel(){
-        Label1.hidden = true
-        Label2.hidden = true
-        Label3.hidden = true
-        Label4.hidden = true
-        Label5.hidden = true
-        Label6.hidden = true
-        Label7.hidden = true
-        Label8.hidden = true
-        Label9.hidden = true
-    }
     func timerCount(){
 
         xcount++
         if count < 59 {
-            count++
+            count += 1
         }else{
             count = 0
-            time++
+            time += 1
         }
-            subLabel.text = String(format: "%02d:%02d", time,count)
-        switch count % 10 {
-        case 0:
+            timeLabel.text = String(format: "%02d:%02d", time,count)
+        labels = makeLabel(xcount * xx, y:y, r:1.0, g: 0.0, b:1.0)
+        view.addSubview(labels)
+        if xcount == 10{
+            removeAllSubviews(view)
             xcount = 0
-            clearLabel()
-        case 1:
-            Label1 = makeLabel(xcount * xx, y: y)
-            self.view.addSubview(Label1)
-        case 2:
-            Label2 = makeLabel(xcount * xx, y: y)
-            self.view.addSubview(Label2)
-        case 3:
-            Label3 = makeLabel(xcount * xx, y: y)
-            self.view.addSubview(Label3)
-        case 4:
-            Label4 = makeLabel(xcount * xx, y: y)
-            self.view.addSubview(Label4)
-        case 5:
-            Label5 = makeLabel(xcount * xx, y: y)
-            self.view.addSubview(Label5)
-        case 6:
-            Label6 = makeLabel(xcount * xx, y: y)
-            self.view.addSubview(Label6)
-        case 7:
-            Label7 = makeLabel(xcount * xx, y: y)
-            self.view.addSubview(Label7)
-        case 8:
-            Label8 = makeLabel(xcount * xx, y: y)
-            self.view.addSubview(Label8)
-        case 9:
-            Label9 = makeLabel(xcount * xx, y: y)
-            self.view.addSubview(Label9)
-        default:
-            break
         }
         print (count % 10 )
     }
-    
+    func makeLabel(x:CGFloat, y:CGFloat,r:CGFloat, g:CGFloat, b:CGFloat)->UILabel{
+        let Label = UILabel()
+        Label.frame = CGRect(x: x, y: y, width: 20, height: 20)
+        Label.backgroundColor = UIColor(red: r, green: g, blue: b, alpha: 1)
+        return Label
+    }
+
+    func removeAllSubviews(parentView: UIView){
+        let subviews = parentView.subviews
+        for subview in subviews {
+            if subview.tag == 0 {
+                subview.hidden = true
+            }
+        }
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
